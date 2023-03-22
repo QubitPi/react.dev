@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - main # change this if your default branch is named differently
+      - master # change this if your default branch is named differently
   workflow_dispatch:
 
 jobs:
@@ -57,6 +57,7 @@ jobs:
       - name: Download base branch bundle stats
         uses: dawidd6/action-download-artifact@v2
         if: success() && github.event.number
+        continue-on-error: true
         with:
           workflow: analyze.yml
           branch: ${{ github.event.pull_request.base.ref }}
@@ -76,9 +77,9 @@ jobs:
       #
       # Either of these arguments can be changed or removed by editing the `nextBundleAnalysis`
       # entry in your package.json file.
-      - name: Compare with base branch bundle
-        if: success() && github.event.number
-        run: ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
+#      - name: Compare with base branch bundle
+#        if: success() && github.event.number
+#        run: ls -laR .next/analyze/base && npx -p nextjs-bundle-analysis compare
 
       - name: Upload analysis comment
         uses: actions/upload-artifact@v4
