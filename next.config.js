@@ -6,7 +6,7 @@
  * @type {import('next').NextConfig}
  **/
 const nextConfig = {
-basePath: '/react.dev',
+  basePath: '/react.dev',
   pageExtensions: ['jsx', 'js', 'ts', 'tsx', 'mdx', 'md'],
   reactStrictMode: true,
   experimental: {
