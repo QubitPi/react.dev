@@ -9,3 +9,26 @@ https://github.com/reactjs/react.dev/blob/main/CONTRIBUTING.md
 If your PR references an existing issue, please add the issue number below
 
 -->
+
+Changelog
+---------
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+
+Checklist
+---------
+
+- [ ] Test
+- [ ] Self-review
+- [ ] Documentation
