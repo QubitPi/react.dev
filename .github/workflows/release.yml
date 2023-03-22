@@ -1,0 +1,38 @@
+# Copyright (c) Jiaqi Liu
+---
+name: Release
+
+"on":
+  push:
+    branches:
+      - master
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+
+  deploy-website:
+    name: Deploy Website to GitHub Pages
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install dependencies
+        run: yarn
+      - name: Build website and put auxiliary files into proper locations
+        run: |
+          yarn build
+          mkdir .next/server/pages/_next
+          mv .next/static/ .next/server/pages/_next/
+          touch .next/server/pages/.nojekyll
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./.next/server/pages
+          user_name: QubitPi
+          user_email: jack20191124@proton.me
