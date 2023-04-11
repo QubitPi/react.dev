@@ -17,7 +17,7 @@ One of the best features of React is that it helps us build a componentized app.
 
 </YouWillLearn>
 
-## Creating an Event Bus
+## Creating an Event Bus {/*creating-an-event-bus*/}
 
 To communicate between two independent components in React, we have the flexibility to set up a global event-driven system, or a **PubSub** system. An **event bus** implements the PubSub pattern, allows us to listen and dispatch events from components, and so helps us to decouple our components and pass data using events fired from other components so that they don't have direct dependencies between each other.
 
@@ -80,7 +80,7 @@ remove(event, callback) {
 // ...
 ```
 
-## Using the Event Bus for Communication
+## Using the Event Bus for Communication {/*using-the-event-bus-for-communication*/}
 
 Now that we have created a custom event bus, it's time to use it to pass data between the components.
 
@@ -157,6 +157,6 @@ class Message extends Component {
 
 <Recap>
 
-Using an event bus to communicate between React components is not conventional, but it is useful when it comes to communication between _decoupled_ or _independent_ components. When working on extensive apps, we won't want to use a custom event bus, but instead rely on other libraries like **PubSub.js** or **Redux**. Context API can also be used to pass data between components, but that requires additional wrapper components, which might make the component challenging to maintain.
+Using an event bus to communicate between React components is not conventional, but it is useful when it comes to communication between _decoupled_ or _independent_ components. When working on extensive apps, we won't want to use a custom event bus, but instead rely on other libraries like **PubSub.js**, **[react-suber](https://www.npmjs.com/package/react-suber)** or **Redux**. Context API can also be used to pass data between components, but that requires additional wrapper components, which might make the component challenging to maintain.
 
 </Recap>
