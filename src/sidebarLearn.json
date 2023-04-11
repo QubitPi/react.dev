@@ -91,6 +91,10 @@
           "path": "/learn/passing-props-to-a-component"
         },
         {
+            "title": "Communicating between Independent Components",
+            "path": "/learn/communicating-between-independent-components"
+        },
+        {
           "title": "Conditional Rendering",
           "path": "/learn/conditional-rendering"
         },
