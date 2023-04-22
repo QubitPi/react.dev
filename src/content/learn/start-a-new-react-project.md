@@ -567,7 +567,7 @@ module.exports = function () {
 };
 ```
 
-:::info
+<Note>
 
 The `historyApiFallback: true` above combined with the `publicPath: "/"` from the webpack.config.js file shall, if we have router defined in our app, enable page refresh on the flight. Otherwise, a 404 error on sub-router page refresh will occur[^enabling-routed-page-refresh-with-webpack].
 
@@ -575,7 +575,7 @@ Please checkout [Server-side rendering vs Client-side rendering][Server-side ren
 
 Finally, here is our Node.js API file:
 
-:::
+</Note>
 
 ```javascript
 "use strict";
