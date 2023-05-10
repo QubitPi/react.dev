@@ -220,7 +220,7 @@ To install Babel in our project, go ahead and run
 
 <TerminalBlock>
 
-npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/preset-react
+yarn add -D @babel/core @babel/cli @babel/preset-env @babel/preset-react
 
 </TerminalBlock>
 
@@ -247,7 +247,7 @@ Now we need to acquire now and configure [Webpack][webpack] (later). We'll need 
 
 <TerminalBlock>
 
-npm install --save-dev webpack webpack-cli webpack-dev-server style-loader css-loader babel-loader
+yarn add -D webpack webpack-cli webpack-dev-server style-loader css-loader babel-loader
 
 </TerminalBlock>
 
@@ -256,7 +256,7 @@ npm install --save-dev webpack webpack-cli webpack-dev-server style-loader css-l
 We'll need to get two more packages:
 
 ```bash
-npm install react react-dom
+yarn add react react-dom
 ```
 
 Note that we do save those as _regular_ dependencies, i.e. without `--save-dev` option.
@@ -269,7 +269,7 @@ We integrate TypeScript by
 
 <TerminalBlock>
 
-npm install --save-dev typescript
+yarn add -D typescript
 
 </TerminalBlock>
 
@@ -300,7 +300,7 @@ I guess we don't need to explain why we need to setup some testing here, so let'
 
 <TerminalBlock>
 
-npm install --save-dev jest babel-jest @types/jest ts-jest react-test-renderer @testing-library/react @testing-library/jest-dom
+yarn add -D jest babel-jest @types/jest ts-jest react-test-renderer @testing-library/react @testing-library/jest-dom
 
 </TerminalBlock>
 
@@ -321,7 +321,7 @@ Jest supports TypeScript, via [Babel][Babel]. First, make sure we followed the i
 
 <TerminalBlock>
 
-npm install --save-dev @babel/preset-typescript
+yarn add -D @babel/preset-typescript
 
 </TerminalBlock>
 
