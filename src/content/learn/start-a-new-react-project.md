@@ -331,7 +331,7 @@ Jest transpiles TypeScripts before running test harness. We will need a configur
 {
     "preset": "ts-jest",
     "testEnvironment": "jsdom",
-    "setupFilesAfterEnv": ["<rootDir>/src/setupTests.ts"],
+    "setupFilesAfterEnv": ["<rootDir>/scripts/jest/setupTests.ts"],
     "transform": {
         "^.+\\.[t|j]sx?$": "babel-jest",
         "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
