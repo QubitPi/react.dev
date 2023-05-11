@@ -295,8 +295,7 @@ Let's set up a configuration to support JSX and compile TypeScript down to ES5 b
 }
 ```
 
-See [TypeScript's documentation](https://www.typescriptlang.org/tsconfig) to learn more about tsconfig.json configuration options. The thing we need to mention here is the `"jsx": "react-jsx"` option. In short, [`react-jsx` is a more-modern option compared to other such as old `react`](https://stackoverflow.com/a/73518971/14312712) and we will use this newer feature. In addition, `"include": ["packages"]` assumes we are building a
-[monorepo](https://qubitpi.github.io/monorepo.tools/), otherwise, it could just be `"include": ["src"]` instead
+See [TypeScript's documentation](https://www.typescriptlang.org/tsconfig) to learn more about tsconfig.json configuration options. The thing we need to mention here is the `"jsx": "react-jsx"` option. In short, [`react-jsx` is a more-modern option compared to other such as old `react`](https://stackoverflow.com/a/73518971/14312712) and we will use this newer feature. In addition, `"include": ["packages"]` assumes we are building a [monorepo](https://qubitpi.github.io/monorepo.tools/), otherwise, it could just be `"include": ["src"]` instead
 
 ### (Testing) Jest {/*testing-jest*/}
 
