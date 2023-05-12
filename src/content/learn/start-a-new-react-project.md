@@ -436,7 +436,7 @@ References:
 
 ### Setup [Webpack Dev Server][webpack dev server] {/*setup-webpack-dev-serverwebpack-dev-server*/}
 
-We've mentioned previously the need to "build our files or serve them somehow during development for our app to work". Essentially, we will need to achieve this by enabling `npm start` command using [Webpack Dev Server][webpack dev server]
+We've mentioned previously the need to "build our files or serve them somehow during development for our app to work". Essentially, we will need to achieve this by enabling `yarn start` command using [Webpack Dev Server][webpack dev server]
 
 We've [installed webpack in previous section](#webpack), now it's time to utilize it by giving it a config file. We name it **webpack.config.js**:
 
@@ -528,10 +528,10 @@ The next rule is for processing CSS. Since we're not pre-or-post-processing our 
 
 We want to use [Hot Module Replacement][Hot Module Replacement] so that we don't have to constantly refresh to see our changes. All we do for that in terms of this file is instantiate a new instance of the plugin in the plugins property, i.e. `new webpack.HotModuleReplacementPlugin()`
 
-We need to add an `index.html` to our webpak config, so it can work with it; otherwise webpack-dev-server will simply get us a blank screen with `npm start`[^1]. We use [html-webpack-plugin][html-webpack-plugin] for this.
+We need to add an `index.html` to our webpak config, so it can work with it; otherwise webpack-dev-server will simply get us a blank screen with `yarn start`[^1]. We use [html-webpack-plugin][html-webpack-plugin] for this.
 
 ```bash
-npm i --save-dev html-webpack-plugin
+yarn add -D html-webpack-plugin
 ```
 
 The `new HtmlWebpackPlugin(...)` snippet above was taking from an ejected [CRA][create-react-app].
@@ -604,7 +604,7 @@ We put this in `scripts/start.js` so that we will be able to call this script du
 
 ### Creating a Production Build {/*creating-a-production-build*/}
 
-We will use `npm run build` to create a `build` directory with a production build of our app. Inside the `build/static` directory will be our JavaScript and CSS files. Each filename inside of `build/static` will contain a unique hash of the file contents. This hash in the file name enables long term caching techniques, which allows us to use [aggressive caching techniques](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#invalidating_and_updating_cached_responses) to avoid the browser re-downloading our assets if the file contents haven't changed. If the contents of a file changes in a subsequent build, the filename hash that is generated will be different.
+We will use `yarn build` to create a `build` directory with a production build of our app. Inside the `build/static` directory will be our JavaScript and CSS files. Each filename inside of `build/static` will contain a unique hash of the file contents. This hash in the file name enables long term caching techniques, which allows us to use [aggressive caching techniques](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#invalidating_and_updating_cached_responses) to avoid the browser re-downloading our assets if the file contents haven't changed. If the contents of a file changes in a subsequent build, the filename hash that is generated will be different.
 
 ```javascript
 "use strict";
@@ -620,7 +620,7 @@ console.log("Creating an optimized production build...");
 compiler.run();
 ```
 
-We put this in `scripts/build.js` so that we will be able to call this script during `npm run build` by adding the following line to `package.json`:
+We put this in `scripts/build.js` so that we will be able to call this script during `yarn build` by adding the following line to `package.json`:
 
 ```json
 "scripts": {
@@ -632,7 +632,7 @@ We put this in `scripts/build.js` so that we will be able to call this script du
 
 ### Troubleshooting {/*troubleshooting*/}
 
-#### Some warnings pops up from some test files while running `npm test`: {/*some-warnings-pops-up-from-some-test-files-while-running-npm-test*/}
+#### Some warnings pops up from some test files while running `yarn test`: {/*some-warnings-pops-up-from-some-test-files-while-running-yarn-test*/}
 
 ```
   ● Console
