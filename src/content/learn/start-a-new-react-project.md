@@ -185,7 +185,7 @@ Our `public` directory will handle any static assets, and most importantly house
     <meta name="theme-color" content="#000000" />
     <link rel="manifest" href="./manifest.json" />
     <link rel="shortcut icon" href="./favicon.ico" />
-    <title>Messier 61</title>
+    <title>My App</title>
 </head>
 
 <body>
@@ -199,6 +199,63 @@ The `manifest.json` and `favidon.ico` will be placed in the same directory as th
 
 > [The `manifest.json` provides metadata](https://developers.google.com/web/fundamentals/web-app-manifest/) used when
 > our web app is installed on a user's mobile device or desktop.
+
+#### src/App.tsx {/*srcapptsx*/}
+
+The TypeScript code in **App.tsx** creates our _root_ component. In React, a root component is a tree of child components that represents the whole user interface:
+
+```typescript
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+import MyComponent from "somePathTo/MyComponent";
+import MyOtherComponent from "somePathTo/MyOtherComponent";
+
+export default function App(): JSX.Element {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MyComponent />} />
+        <Route path="/other" element={<MyOtherComponent />} />
+      </Routes>
+    </Router>
+  );
+}
+```
+
+#### src/index.tsx {/*srcindextsx*/}
+
+**index.tsx** is the bridge between the root component and the web browser.
+
+```typescript
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+#### src/index.css {/*srcindexcss*/}
+
+This file defines the styles for our React app:
+
+```css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+```
 
 Now that we've got our HTML page set up, we can start getting serious. We're going to need to set up a few more things. First, we need to make sure the code we write can be compiled, so we'll need [Babel][Babel], which we discuss next.
 
