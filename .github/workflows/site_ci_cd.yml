@@ -1,6 +1,6 @@
 # Copyright (c) Jiaqi Liu
 ---
-name: Test
+name: Site CI/CD
 
 "on":
   workflow_call:
@@ -24,14 +24,14 @@ jobs:
       - name: Build website
         run: yarn build
       - name: Bundle up a GitHub Pages deployable
-        # if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         run: |
           mkdir .next/server/pages/_next
           mv .next/static/ .next/server/pages/_next/
           cp -r public/images ./.next/server/pages/images
           touch .next/server/pages/.nojekyll
       - name: Deploy to GitHub Pages
-        # if: github.ref == 'refs/heads/master'
+        if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

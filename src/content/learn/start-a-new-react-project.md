@@ -203,8 +203,6 @@ The `manifest.json` and `favidon.ico` will be placed in the same directory as th
 > [The `manifest.json` provides metadata](https://developers.google.com/web/fundamentals/web-app-manifest/) used when
 > our web app is installed on a user's mobile device or desktop.
 
-Now that we've got our HTML page set up, we can start getting serious. We're going to need to set up a few more things. First, we need to make sure the code we write can be compiled, so we'll need [Babel][Babel], which we discuss next.
-
 #### src/App.tsx {/*srcapptsx*/}
 
 The TypeScript code in **App.tsx** creates our _root_ component. In React, a root component is a tree of child components that represents the whole user interface:
@@ -261,6 +259,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 ```
+
+Now that we've got our HTML page set up, we can start getting serious. We're going to need to set up a few more things. First, we need to make sure the code we write can be compiled, so we'll need [Babel][Babel], which we discuss next.
 
 ### Babel {/*babel*/}
 
