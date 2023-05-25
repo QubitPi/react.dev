@@ -127,17 +127,13 @@ Server Components and Suspense are React features rather than Next.js features. 
 
 </DeepDive>
 
-## Create React Project from Scratch {/*create-react-project-from-scratch*/}
+## Create Monorepo from Scratch {/*create-monorepo-from-scratch*/}
 
-A framework will usually also provide a routing and a data fetching solution. In a larger project, you might also want to manage multiple packages in a single repository with a tool like [Nx](https://nx.dev/react) or [Turborepo.](https://turborepo.org/)
-
-[create-react-app][create-react-app] abstracts a lot of what makes a React app work away from us - at least without ejecting it and having to tweak all of the options by hand. There are a number of reasons we may want to make our own implementation, or at least have some idea of what it's doing under the hood. **Most importantly,[create-react-app][create-react-app] is more like a "Spring Boot" in the Front End world. Those who dislike the Spring for offering quick startup but terrible customizability later might find [create-react-app][create-react-app] very frustrating.**
-
-There are a couple of hurdles to starting a React app. The first is that node can't process all of the syntax (such as import/export and [JSX][JSX]). The second is that we will either need to build our files or serve them somehow during development for our app to work - This is especially important in the latter situations. These issues with be handled by [Babel][Babel] and [Webpack][webpack], which we cover below
+There are a couple of hurdles to starting a React [monorepo](https://qubitpi.github.io/monorepo.tools/). The first is that node can't process all of the syntax (such as import/export and [JSX][JSX]). The second is that we will either need to build our files or serve them somehow during development for our app to work - This is especially important in the latter situations. These issues with be handled by [Babel][Babel] and [Webpack][webpack], which we cover below
 
 ### Setup {/*setup*/}
 
-To get started, create a new directory for our new React app. Then, initialize the project with
+To get started, create a new directory for our new React monorepo. Inside the monorepo directory, initialize a project with
 
 <TerminalBlock>
 
@@ -145,15 +141,7 @@ npm init
 
 </TerminalBlock>
 
-In the new project folder, create the following structure:
-
-```
-.
-+-- public
-+-- src
-```
-
-Thinking ahead a little bit, we'll eventually want to build our app and we'll probably want to exclude the built version and our node modules from commits, so let's go ahead and add a `.gitignore` file excluding (at least) the`node_modules`, `dist`, etc:
+Thinking ahead a little bit, we'll eventually want to build our app and we'll probably want to exclude the built version and our node modules from commits, so let's go ahead and, at the root level of the monorepo, add a `.gitignore` file excluding (at least) the`node_modules`, `dist`, etc:
 
 ```gitignore
 dist
@@ -170,6 +158,28 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+```
+
+We need to install react now:
+
+```bash
+yarn add react react-dom
+```
+
+Note that we do save those as _regular_ dependencies, i.e. without `--save-dev` option.
+
+Next, in the new project folder, create the following directory:
+
+```
+mkdir -p packages/app/
+```
+
+Next, create the following structure inside `packages/app/`
+
+```
+.
++-- public
++-- src
 ```
 
 Our `public` directory will handle any static assets, and most importantly houses our `index.html` file, which react will utilize to render our app. The following code is an example:
@@ -198,29 +208,29 @@ The `manifest.json` and `favidon.ico` will be placed in the same directory as th
 > [The `manifest.json` provides metadata](https://developers.google.com/web/fundamentals/web-app-manifest/) used when
 > our web app is installed on a user's mobile device or desktop.
 
-#### src/App.tsx {/*srcapptsx*/}
+#### packages/app/src/App.tsx {/*packagesappsrcapptsx*/}
 
-The TypeScript code in **App.tsx** creates our _root_ component. In React, a root component is a tree of child components that represents the whole user interface:
+The TypeScript code in **App.tsx** creates our **root component**. In React, a root component is a tree of child components that represents the whole user interface:
 
 ```typescript
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-import MyComponent from "somePathTo/MyComponent";
-import MyOtherComponent from "somePathTo/MyOtherComponent";
+import MyHomeComponent from "somePathTo/MyHomeComponent";
+import MySettingsPageComponent from "somePathTo/MySettingsPageComponent";
 
 export default function App(): JSX.Element {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<MyComponent />} />
-        <Route path="/other" element={<MyOtherComponent />} />
+        <Route path="/" element={<MyHomeComponent />} />
+        <Route path="/settings" element={<MySettingsPageComponent />} />
       </Routes>
     </Router>
   );
 }
 ```
 
-#### src/index.tsx {/*srcindextsx*/}
+#### packages/app/src/index.tsx {/*packagesappsrcindextsx*/}
 
 **index.tsx** is the bridge between the root component and the web browser.
 
@@ -237,9 +247,9 @@ root.render(
 );
 ```
 
-#### src/index.css {/*srcindexcss*/}
+#### packages/app/src/index.css {/*packagesappsrcindexcss*/}
 
-This file defines the styles for our React app:
+This file defines the styles for our React app. Here is an example:
 
 ```css
 body {
@@ -271,56 +281,34 @@ Babel is a toolchain that is mainly used to convert ECMAScript 2015+ code into a
 });
 ```
 
-To install Babel in our project, go ahead and run
+To install Babel in our project, **go to the top directory of our monorepo project** and run
 
 <TerminalBlock>
 
-yarn add -D @babel/core @babel/cli @babel/preset-env @babel/preset-react
+yarn add -D @babel/core @babel/cli @babel/preset-env @babel/preset-react @babel/preset-typescript
 
 </TerminalBlock>
 
-`@babel/core` is the main babel package - We need this for babel to do any transformations on our code. `@babel/cli` allows us to compile files from the command line. `preset-env` and `preset-react` are both presets that transform specific flavors of code - in this case, the `env` preset allows us to transform ES6+ into more traditional javascript and the react preset does the same, but with JSX instead.
+`@babel/core` is the main babel package - We need this for babel to do any transformations on our code. `@babel/cli` allows us to compile files from the command line. `preset-env` and `preset-react` are both presets that transform specific flavors of code - in this case, the `env` preset allows us to transform ES6+ into more traditional javascript and the react preset does the same, but with JSX instead. `@babel/preset-typescript` is used by [Jest we setup later](#jest), because we will need to transpile Jest into TypeScript via [Babel][Babel]
 
 The following 2 links explains in details why the 4 dependencies above are needed in our react app:
 
 - [@babel/core @babel/cli @babel/preset-env](https://qubitpi.github.io/babel-website/docs/usage#overview)
 - [@babel/preset-react](https://babeljs.io/docs/#jsx-and-react)
 
-In the project root, create a Babel configuration file called **babel.config.json**. Here, we're telling babel that we're using the `env` and `react` presets (and some [typescript support for Jest testing](https://jestjs.io/docs/getting-started#using-typescript) which we discuss later):
+In the project root, create a Babel configuration file called **babel.config.js**. Here, we're telling babel that we're using the `env` and `react` presets (and some [typescript support for Jest testing](https://jestjs.io/docs/getting-started#using-typescript) which we discuss later):
 
-babel.config.json:
+```javascript
+module.exports = function() {
+  const presets = ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"]
 
-```json
-{
-  "presets": ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"]
+  return { presets };
 }
 ```
 
-### Webpack {/*webpack*/}
-
-Now we need to acquire now and configure [Webpack][webpack] (later). We'll need a few more packages, and we'll want to save these as dev dependencies:
-
-<TerminalBlock>
-
-yarn add -D webpack webpack-cli webpack-dev-server style-loader css-loader babel-loader
-
-</TerminalBlock>
-
-### React {/*react*/}
-
-We'll need to get two more packages:
-
-```bash
-yarn add react react-dom
-```
-
-Note that we do save those as _regular_ dependencies, i.e. without `--save-dev` option.
-
 ### TypeScript {/*typescript*/}
 
-This is sort of a personal preference because I believe adding type-safe features, like TypeScript, ultimately makes better-quality software.
-
-We integrate TypeScript by
+We integrate TypeScript by **going to the top directory of our monorepo project and running**
 
 <TerminalBlock>
 
@@ -333,25 +321,26 @@ Let's set up a configuration to support JSX and compile TypeScript down to ES5 b
 ```json
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "esnext",
+    "target": "es6",
+    "module": "commonjs",
     "jsx": "react-jsx",
-
+    "strict": true,
+    "allowJs": true,
     "outDir": "./dist/",
     "noImplicitAny": true,
-    "allowJs": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
-    "strict": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["packages"]
 }
 ```
 
-See [TypeScript's documentation](https://www.typescriptlang.org/tsconfig) to learn more about tsconfig.json configuration options. The thing we need to mention here is the `"jsx": "react-jsx"` option. In short, [`react-jsx` is a more-modern option compared to other such as old `react`](https://stackoverflow.com/a/73518971/14312712) and we will use this newer feature. In addition, `"include": ["packages"]` assumes we are building a [monorepo](https://qubitpi.github.io/monorepo.tools/), otherwise, it could just be `"include": ["src"]` instead
+See [TypeScript's documentation](https://qubitpi.github.io/TypeScript-Website/tsconfig) to learn more about _tsconfig.json_ configuration options. The thing we need to mention here is the `"jsx": "react-jsx"` option. In short, [`react-jsx` is a more-modern option compared to other such as old `react`](https://stackoverflow.com/a/73518971/14312712) and we will use this newer feature.
 
-### (Testing) Jest {/*testing-jest*/}
+### Jest {/*jest*/}
 
-I guess we don't need to explain why we need to setup some testing here, so let's jump righ in with [Jest][Jest]
+Let's jump into test setup with [Jest][Jest]. **At the monorepo root directory** run
 
 <TerminalBlock>
 
@@ -361,7 +350,7 @@ yarn add -D jest babel-jest @types/jest ts-jest react-test-renderer @testing-lib
 
 <Pitfall>
 
-[There is a bug in Jest version 28](https://stackoverflow.com/a/73757948/14312712) and we need to make sure to downgrade jest to some 27 version. At the time of writing, the following versions work:
+[There is a bug in Jest version 28](https://stackoverflow.com/a/73757948/14312712) and we need to make sure to **downgrade jest to some 27 version**. At the time of writing, the following versions work:
 
 ```json
 "@types/jest": "^27.5.2",
@@ -371,16 +360,6 @@ yarn add -D jest babel-jest @types/jest ts-jest react-test-renderer @testing-lib
 ```
 
 </Pitfall>
-
-Jest supports TypeScript, via [Babel][Babel]. First, make sure we followed the instructions on using Babel [above](#babel). Next, install the `@babel/preset-typescript`:
-
-<TerminalBlock>
-
-yarn add -D @babel/preset-typescript
-
-</TerminalBlock>
-
-Then add `@babel/preset-typescript` to the list of presets in `babel.config.js`. _Note we've [already done this above](#babel)_
 
 Jest transpiles TypeScripts before running test harness. We will need a configuration file to specify how TypeScript is going to be transpiled. The file name is **jest.config.json**:
 
@@ -394,29 +373,26 @@ Jest transpiles TypeScripts before running test harness. We will need a configur
         "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
         "^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
-    "transformIgnorePatterns": ["node_modules/(?!@ngrx|(?!deck.gl)|ng-dynamic)"],
     "moduleNameMapper": {
         "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
     }
 }
-
 ```
 
 - `"preset": "ts-jest"` and `"testEnvironment": "jsdom"` are neede by [ts-jest config][ts-jest config]
-- `setupFilesAfterEnv`: This is the post-setup due to the `@testing-library/jest-dom` dependency. In terms of Jest configuration, rather than import it in every test file it is better to do it in the Jest config file:
-
-  ```json
-  setupFilesAfterEnv: [
-    "<rootDir>/src/setupTests.ts"
-  ],
-  ```
-
-  and then we will have a **setupTests.ts** file located at `src/setupTests.ts` with the following content
+- `setupFilesAfterEnv`: This is related to the `@testing-library/jest-dom` dependency. In terms of Jest configuration, rather than import it in every test file it is better to do it in the Jest config file via the `setupFilesAfterEnv` option and then we will have a **setupTests.ts** file located inside `scripts/jest` directory with the following content
 
   ```javascript
   import "@testing-library/jest-dom";
   ```
-- `"^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",`: This was taken from a ejected CRA that specifies how to mock out CSS imports. We should have a file called `cssTransform.js` under `<rootDir>/config/jest/` directory with the following contents:
+
+- `"^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",`: This was taken from an [ejected CRA](https://create-react-app.dev/docs/available-scripts#npm-run-eject) that specifies how to mock out CSS imports. We should have a file called `cssTransform.js` under `<rootDir>/config/jest/` directory with the following contents:
+
+  <Pitfall>
+
+  [create-react-app][create-react-app] abstracts a lot of what makes a React app work away from us - at least without ejecting it and having to tweak all of the options by hand. There are a number of reasons we may want to make our own implementation, or at least have some idea of what it's doing under the hood. **Most importantly,[create-react-app][create-react-app] is more like a "Spring Boot" in the Front End world. Those who dislike the Spring for offering quick startup but terrible customizability later might find [create-react-app][create-react-app] very frustrating.**
+
+  </Pitfall>
 
   ```javascript
   "use strict";
@@ -478,9 +454,8 @@ Jest transpiles TypeScripts before running test harness. We will need a configur
   ```
 
 - `"^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"`: [Mocking CSS Modules](https://jestjs.io/docs/webpack#mocking-css-modules)
-- `transformIgnorePatterns`: By default Jest doesn't transform node_modules, because they should be valid JavaScript files. However, it happens that library authors assume that we'll compile their sources. So we have to tell this to Jest explicitly. Above snippet means that @ngrx, deck and ng-dynamic will be transformed, even though they're node_modules[^transformIgnorePatterns].
 
-References:
+#### Additional Jest References {/*additional-jest-references*/}
 
 - [General](https://jestjs.io/docs/getting-started)
 - [ts-jest config][ts-jest config]
@@ -489,11 +464,20 @@ References:
     - [Property 'toBeInTheDocument' does not exist](https://stackoverflow.com/a/61636112/14312712)
 - [Jest - Handling Static Assets](https://jestjs.io/docs/webpack#handling-static-assets)
 
-### Setup [Webpack Dev Server][webpack dev server] {/*setup-webpack-dev-serverwebpack-dev-server*/}
+### Webpack {/*webpack*/}
 
-We've mentioned previously the need to "build our files or serve them somehow during development for our app to work". Essentially, we will need to achieve this by enabling `yarn start` command using [Webpack Dev Server][webpack dev server]
+We configure [Webpack][webpack] now. We'll need a few more packages as dev dependencies. Run the following commands
+**at the root directory of our monorepo**:
 
-We've [installed webpack in previous section](#webpack), now it's time to utilize it by giving it a config file. We name it **webpack.config.js**:
+<TerminalBlock>
+
+yarn add -D webpack webpack-cli webpack-dev-server style-loader css-loader babel-loader
+
+</TerminalBlock>
+
+#### Setup [Webpack Dev Server][webpack dev server] {/*setup-webpack-dev-serverwebpack-dev-server*/}
+
+We've mentioned previously the need to "build our files or serve them somehow during development for our app to work". Essentially, we will need to achieve this by enabling `yarn start` command using [Webpack Dev Server][webpack dev server]. First, we put a config file of it under `config/webpack` called **webpack.config.js**:
 
 ```javascript
 const path = require("path");
@@ -657,7 +641,7 @@ We put this in `scripts/start.js` so that we will be able to call this script du
 },
 ```
 
-### Creating a Production Build {/*creating-a-production-build*/}
+#### Creating a Production Build {/*creating-a-production-build*/}
 
 We will use `yarn build` to create a `build` directory with a production build of our app. Inside the `build/static` directory will be our JavaScript and CSS files. Each filename inside of `build/static` will contain a unique hash of the file contents. This hash in the file name enables long term caching techniques, which allows us to use [aggressive caching techniques](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#invalidating_and_updating_cached_responses) to avoid the browser re-downloading our assets if the file contents haven't changed. If the contents of a file changes in a subsequent build, the filename hash that is generated will be different.
 
@@ -683,6 +667,57 @@ We put this in `scripts/build.js` so that we will be able to call this script du
   "build": "node scripts/build.js",
   ...
 },
+```
+
+### Creating a new Package {/*creating-a-new-package*/}
+
+In general, each sub-package should have 3 basic components to start with:
+
+1. **src** that contains the package source files
+2. **package.json** which hosts the package specific info and dependencies (and dev dependencies)
+3. **index.ts**
+
+   <DeepDive>
+   
+   #### What's index.ts for?
+
+   Inside _my-package/index.ts_ we would simply do something like this:
+
+   ```typescript
+   import MyComponent from './src/MyComponent.tsx';
+
+   export default MyComponent;
+   ```
+
+   and that's it. This is helpful because inside other components or containers we can do this:
+
+   ```typescript
+   import MyComponent from '../my-package';
+   ```
+
+   because it tries to access the _index.ts_ file by default thus not requiring any more info from us. It would import automatically the _index.ts_ file which imports the actual component itself. If we did not have an _index.ts_ file we would have had to do this:
+
+   ```typescript
+   import MyComponent from '../my-package/src/MyComponent';
+   ```
+   
+   which is kind of awkward. I
+
+   </DeepDive>
+
+At the end of the day, a package fits into a monorepo with the following file structure:
+
+```
+.
+└── monorepo/
+    ├── packages/
+    │   └── my-package/
+    │       ├── src
+    │       ├── index.ts
+    │       └── package.json
+    ├── tsconfig.json
+    ├── package.json
+    └── ...
 ```
 
 ### Troubleshooting {/*troubleshooting*/}
