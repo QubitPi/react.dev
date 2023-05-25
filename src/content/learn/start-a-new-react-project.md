@@ -646,7 +646,7 @@ We put this in `scripts/start.js` so that we will be able to call this script du
 },
 ```
 
-### Creating a Production Build {/*creating-a-production-build*/}
+#### Creating a Production Build {/*creating-a-production-build*/}
 
 We will use `yarn build` to create a `build` directory with a production build of our app. Inside the `build/static` directory will be our JavaScript and CSS files. Each filename inside of `build/static` will contain a unique hash of the file contents. This hash in the file name enables long term caching techniques, which allows us to use [aggressive caching techniques](https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/http-caching#invalidating_and_updating_cached_responses) to avoid the browser re-downloading our assets if the file contents haven't changed. If the contents of a file changes in a subsequent build, the filename hash that is generated will be different.
 
@@ -672,6 +672,57 @@ We put this in `scripts/build.js` so that we will be able to call this script du
   "build": "node scripts/build.js",
   ...
 },
+```
+
+### Creating a new Package {/*creating-a-new-package*/}
+
+In general, each sub-package should have 3 basic components to start with:
+
+1. **src** that contains the package source files
+2. **package.json** which hosts the package specific info and dependencies (and dev dependencies)
+3. **index.ts**
+
+   <DeepDive>
+   
+   #### What's index.ts for?
+
+   Inside _my-package/index.ts_ we would simply do something like this:
+
+   ```typescript
+   import MyComponent from './src/MyComponent.tsx';
+
+   export default MyComponent;
+   ```
+
+   and that's it. This is helpful because inside other components or containers we can do this:
+
+   ```typescript
+   import MyComponent from '../my-package';
+   ```
+
+   because it tries to access the _index.ts_ file by default thus not requiring any more info from us. It would import automatically the _index.ts_ file which imports the actual component itself. If we did not have an _index.ts_ file we would have had to do this:
+
+   ```typescript
+   import MyComponent from '../my-package/src/MyComponent';
+   ```
+   
+   which is kind of awkward. I
+
+   </DeepDive>
+
+At the end of the day, a package fits into a monorepo with the following file structure:
+
+```
+.
+└── monorepo/
+    ├── packages/
+    │   └── my-package/
+    │       ├── src
+    │       ├── index.ts
+    │       └── package.json
+    ├── tsconfig.json
+    ├── package.json
+    └── ...
 ```
 
 ### Troubleshooting {/*troubleshooting*/}
