@@ -765,7 +765,7 @@ In the world of TypeScript, reading the env variables requires us to enforce typ
 process.env.API_URL as string
 ```
 
-In the case of [number]: https://github.com/nodejs/help/issues/2217#issuecomment-742274290
+In the case of [number](https://github.com/nodejs/help/issues/2217#issuecomment-742274290)
 
 ```typescript
 Number(String(process.env.JWTEXPIRES))
