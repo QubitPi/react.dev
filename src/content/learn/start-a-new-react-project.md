@@ -708,11 +708,11 @@ EXTEND_ESLINT = true
 REACT_APP_Environment=development
 ```
 
-:::caution
+<Pitfall>
 
 The content of .env files in any environment should be considered public knowledge, and there should not be any risk in exposing them to public.
 
-:::
+</Pitfall>
 
 For .env.(environment), we should have the same set of keys in each file, with different values specific to that environment.
 
@@ -757,7 +757,7 @@ We will use [dotenv](https://www.npmjs.com/package/dotenv) in our project
 
 Lastly, to access these config values, we simply use **process.env.(key-name)**, such as `process.env.API_URL`
 
-:::tip
+<Note>
 
 In the world of TypeScript, reading the env variables requires us to enforce type-safety. So we might need to, in case env is a string, do
 
@@ -771,7 +771,7 @@ In the case of [number]: https://github.com/nodejs/help/issues/2217#issuecomment
 Number(String(process.env.JWTEXPIRES))
 ```
 
-:::
+</Note>
 
 ##### Static Configurations {/*static-configurations*/}
 
