@@ -139,7 +139,7 @@ To get started, create a new directory for our new React monorepo. Inside the mo
 
 <TerminalBlock>
 
-npm init
+yarn init
 
 </TerminalBlock>
 
@@ -152,10 +152,7 @@ dist
 /coverage
 node_modules
 
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.
 
 npm-debug.log*
 yarn-debug.log*
@@ -634,7 +631,7 @@ server.startCallback(() => {
 });
 ```
 
-We put this in `scripts/start.js` so that we will be able to call this script during `npm start` by adding the following line to `package.json`:
+We put this in `scripts/start.js` so that we will be able to call this script during `yarn start` by adding the following line to `package.json`:
 
 ```json
 "scripts": {
@@ -669,6 +666,176 @@ We put this in `scripts/build.js` so that we will be able to call this script du
   "build": "node scripts/build.js",
   ...
 },
+```
+
+### Project Configuration Management {/*project-configuration-management*/}
+
+This document describes Configuration Management for Nexus Graph.
+
+#### Context {/*context*/}
+
+Configuration management is essential for every application that will be deployed into multiple environments, which is pretty much the majority of Apps and APIs. Focusing on React Apps in this post, we will cover how to store configurations in Nexus Graph, how to configure them, and finally how to read them.
+
+#### Configuration Types {/*configuration-types*/}
+
+There are different types of configurations in Nexus Graph
+
+##### Environment Dependent {/*environment-dependent*/}
+
+Those are configurations that change from one environment to the other. A good example would be FQDNs (Fully Qualified Domain Names). A URL in local dev environment, might point to `https://localhost:6500`, however the same URL in production, would point to `https://theresa-api.com`.
+
+###### Storing Environment Dependent Configs {/*storing-environment-dependent-configs*/}
+
+The way we manage these types of configurations is through **env files**. We maintain a separate env file for each environment.
+
+We have:
+
+- **.env**: for local dev environment
+- **.env.test**: for test environment
+- **.env.production**: for production
+
+When the application is packaged for each environment by WebPack, the right configuration file will be picked up. The content of such file is key-value pair, such as below:
+
+```conf
+HTTPS=true
+PORT=8500
+HOST=localhost
+REACT_APP_API_URL=https://localhost:6011
+REACT_APP_API_PORTAL_SUBSCRIPTION=NotRequiredForLocalUse
+REACT_APP_INSTRUMENTATION_KEY=NotApplication
+PUBLIC_URL=https://localhost:8500
+EXTEND_ESLINT = true
+REACT_APP_Environment=development
+```
+
+:::caution
+
+The content of .env files in any environment should be considered public knowledge, and there should not be any risk in exposing them to public.
+
+:::
+
+For .env.(environment), we should have the same set of keys in each file, with different values specific to that environment.
+
+###### Reading from .env File {/*reading-from-env-file*/}
+
+We will use [dotenv](https://www.npmjs.com/package/dotenv) in our project
+
+1. Create **.env** file at the root of project
+
+   ```
+   API_URL=http://localhost:8000
+   ```
+   
+2. Install dotenv
+
+   ```bash
+   yarn add dotenv
+   ```
+   
+3. Config webpack to add env variables
+
+   ```javascript
+   const webpack = require('webpack');
+   const dotenv = require('dotenv');
+   
+   module.exports = () => {
+     // call dotenv and it will return an Object with a parsed key 
+     const env = dotenv.config().parsed;
+   
+     // reduce it to a nice object, the same as before
+     const envKeys = Object.keys(env).reduce((prev, next) => {
+       prev[`process.env.${next}`] = JSON.stringify(env[next]);
+       return prev;
+     }, {});
+   
+     return {
+       plugins: [
+       new webpack.DefinePlugin(envKeys)
+     ]
+   };
+   ```
+
+Lastly, to access these config values, we simply use **process.env.(key-name)**, such as `process.env.API_URL`
+
+:::tip
+
+In the world of TypeScript, reading the env variables requires us to enforce type-safety. So we might need to, in case env is a string, do
+
+```typescript
+process.env.API_URL as string
+```
+
+In the case of [number]: https://github.com/nodejs/help/issues/2217#issuecomment-742274290
+
+```typescript
+Number(String(process.env.JWTEXPIRES))
+```
+
+:::
+
+##### Static Configurations {/*static-configurations*/}
+
+Static configurations are the ones that don't change from one environment to the other. Examples would be telephone numbers, company names, messages and copies, etc. We simply store these values in a separate file, as they might be subject to change from time to time, and this makes it easier to find and change them.
+
+###### Storing Static Configuration Values {/*storing-static-configuration-values*/}
+
+One way to manage these configs, is to store them in simple json file, such as below:
+
+```json
+{
+  "locations": {
+    "fetchCountriesUrl": "v1/countries"
+  },
+  "seo": {
+    "domain": "https://test.com",
+    "siteName": "Test",
+    "defaultTitle": "Test | Fast Engineering Eco-Systems with No Compromise",
+    "defaultDescription": "...",
+    "contact": {
+      "email": "info@test.com",
+      "phone": "+61 2 816238786"
+    },
+    "address": {
+      "streetAddress": "U7 678 Orouke Rd",
+      "addressLocality": "RedFern",
+      "addressRegion": "NSW",
+      "addressCountry": "Australia",
+      "postalCode": "2000"
+    }
+  }
+}
+```
+
+JSON structure also enables us to store the values in a specific hierarchy which makes it easier to manage.
+
+###### Reading Static Config Values {/*reading-static-config-values*/}
+
+All we need to do to access such config values, is to import it in our `.ts/.tsx` files and access the values like any other json object:
+
+```typescript
+import config from '../../config.json';
+```
+
+and then I can write:
+
+```typescript
+config.locations.fetchCountriesUrl
+```
+
+##### Constants {/*constants*/}
+
+The other alternative to manage static values in code, is through TS objects. We typically manage two types of values using TS objects:
+
+- To store/read those values that are highly unlikely to change from time to time, but we want to keep them separate from our code anyway
+- To store/read those values that won't be stored in JSON files as they are (and not as strings), such as Regular Expressions (RegEx)
+
+An example would look like below, and you can read them exactly like Option 2, as above:
+
+```typescript
+export const Auth = {
+    PasswordRegEx: /^(?=.*[A-Z])(?=.*[\W])(?=.*[0-9])(?=.*[a-z]).{8,128}$/,
+    PasswordFailMessage: "Passwords must have at least 8 characters, 1 lowercase, 1 upper case, 1 number, and 1 special character."
+}
 ```
 
 ### Creating a new Package {/*creating-a-new-package*/}
