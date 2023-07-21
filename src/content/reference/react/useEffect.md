@@ -72,6 +72,43 @@ function ChatRoom({ roomId }) {
 
 ## Usage {/*usage*/}
 
+### Triggering a React Effect Periodically {/*triggering-a-react-effect-periodically*/}
+
+Consider the following simple React component with an effect that fetches some data and saves it to the component stat
+
+```js
+function MyComponent(props) {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const res = await fetch("data.json");
+      setData(await res.json());
+    };
+    fetchData();
+  }, []);
+
+  return (
+    <></>
+  )
+}
+```
+
+To set this effect to run periodically, replace _fetchData()_ with [**setInterval(fetchData, 60)**](https://developer.mozilla.org/en-US/docs/Web/API/setInterval); just make sure to do **clearInterval** (return of _useEffect()_) when component unmounts.
+
+```js
+useEffect(() => {
+  const fetchData = async () => {
+    const res = await fetch("data.json");
+    setData(await res.json());
+  };
+
+  const t = setInterval(fetchData, 60000);
+
+  return () => clearInterval(t); // clear
+}, []);
+```
+
 ### Connecting to an external system {/*connecting-to-an-external-system*/}
 
 Some components need to stay connected to the network, some browser API, or a third-party library, while they are displayed on the page. These systems aren't controlled by React, so they are called *external.*
