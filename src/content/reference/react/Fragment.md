@@ -209,7 +209,7 @@ function PostBody({ body }) {
 
 </Sandpack>
 
-### Conditional Rendering
+### Conditional Rendering {/*conditional-rendering*/}
 
 When we do conditional rendering using, for example, the following TypeScript code
 
