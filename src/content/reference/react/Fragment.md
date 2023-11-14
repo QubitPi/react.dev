@@ -234,12 +234,12 @@ Type 'Element | undefined' is not assignable to type 'ReactElement<any, string |
 In this case we need to [wrap the return in Fragments](https://stackoverflow.com/a/75130652):
 
 ```js {3,9}
-export default function DeleteButton(props: DeleteButtonProps): JSX.Element {
+export default function MyComponent(props: MyComponentProps): JSX.Element {
   return (
     <>
-      ( props.graphId && (
-      <StyledDeleteButton onClick={() => props.onClick(props.graphId)}>
-        <TrashIcon data-testid="deleteButton" />
+      ( props.shouldRender && (
+      <StyledButton onClick={() => ...}>
+        <TrashIcon />
       </StyledDeleteButton>
       ) )
     </>
