@@ -36,18 +36,20 @@ export function Diagram({
       {captionPosition === 'top' && <Caption text={children} />}
       <div className="dark-image">
         <Image
-          src={`/react.dev/images/docs/diagrams/${name}.dark.png`}
+          src={`https://qubitpi.github.io/react.dev/images/docs/diagrams/${name}.dark.png`}
           alt={alt}
           height={height}
           width={width}
+          quality={100}
         />
       </div>
       <div className="light-image">
         <Image
-          src={`/react.dev/images/docs/diagrams/${name}.png`}
+          src={`https://qubitpi.github.io/react.dev/images/docs/diagrams/${name}.png`}
           alt={alt}
           height={height}
           width={width}
+          quality={100}
         />
       </div>
       {(!captionPosition || captionPosition === 'bottom') && (
