@@ -578,7 +578,7 @@ We put this in `scripts/build.js` so that we will be able to call this script du
 },
 ```
 
-### App Package
+### App Package {/*app-package*/}
 
 Next, in the new project folder, create the following directory:
 
@@ -679,11 +679,11 @@ code {
 
 Now that we've got our HTML page set up, we can start getting serious. We're going to need to set up a few more things. First, we need to make sure the code we write can be compiled, so we'll need [Babel][Babel], which we discuss next.
 
-### Upgrade to Yarn 2
+### Upgrade to Yarn 2 {/*upgrade-to-yarn-2*/}
 
 https://yarnpkg.com/migration/guide#migration-steps
 
-### Setup CI/CD
+### Setup CI/CD {/*setup-cicd*/}
 
 - [Code Style Checks](https://qubitpi.github.io/hashicorp-aws/docs/react#code-style-checks)
 - 
