@@ -159,110 +159,13 @@ yarn-error.log*
 
 We need to install react now:
 
-```bash
+<TerminalBlock>
+
 yarn add react react-dom
-```
+
+</TerminalBlock>
 
 Note that we do save those as _regular_ dependencies, i.e. without `--save-dev` option.
-
-Next, in the new project folder, create the following directory:
-
-```
-mkdir -p packages/app/
-```
-
-Next, create the following structure inside `packages/app/`
-
-```
-.
-+-- public
-+-- src
-```
-
-Our `public` directory will handle any static assets, and most importantly houses our `index.html` file, which react will utilize to render our app. The following code is an example:
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#000000" />
-    <link rel="manifest" href="./manifest.json" />
-    <link rel="shortcut icon" href="./favicon.ico" />
-    <title>My App</title>
-</head>
-
-<body>
-<noscript> You need to enable JavaScript to run this app. </noscript>
-<div id="root"></div>
-</body>
-</html>
-```
-
-The `manifest.json` and `favidon.ico` will be placed in the same directory as the `index.html`, i.e. the `public` directory.
-
-> [The `manifest.json` provides metadata](https://developers.google.com/web/fundamentals/web-app-manifest/) used when
-> our web app is installed on a user's mobile device or desktop.
-
-#### packages/app/src/App.tsx {/*packagesappsrcapptsx*/}
-
-The TypeScript code in **App.tsx** creates our **root component**. In React, a root component is a tree of child components that represents the whole user interface:
-
-```typescript
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-
-import MyHomeComponent from "somePathTo/MyHomeComponent";
-import MySettingsPageComponent from "somePathTo/MySettingsPageComponent";
-
-export default function App(): JSX.Element {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<MyHomeComponent />} />
-        <Route path="/settings" element={<MySettingsPageComponent />} />
-      </Routes>
-    </Router>
-  );
-}
-```
-
-#### packages/app/src/index.tsx {/*packagesappsrcindextsx*/}
-
-**index.tsx** is the bridge between the root component and the web browser.
-
-```typescript
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-```
-
-#### packages/app/src/index.css {/*packagesappsrcindexcss*/}
-
-This file defines the styles for our React app. Here is an example:
-
-```css
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
-}
-```
-
-Now that we've got our HTML page set up, we can start getting serious. We're going to need to set up a few more things. First, we need to make sure the code we write can be compiled, so we'll need [Babel][Babel], which we discuss next.
 
 ### Babel {/*babel*/}
 
@@ -293,15 +196,22 @@ The following 2 links explains in details why the 4 dependencies above are neede
 - [@babel/core @babel/cli @babel/preset-env](https://qubitpi.github.io/babel-website/docs/usage#overview)
 - [@babel/preset-react](https://babeljs.io/docs/#jsx-and-react)
 
-In the project root, create a Babel configuration file called **babel.config.js**. Here, we're telling babel that we're using the `env` and `react` presets (and some [typescript support for Jest testing](https://jestjs.io/docs/getting-started#using-typescript) which we discuss later):
+In our monorepo project root, create a Babel configuration file called **babel.config.json**. Here, we're telling babel that we're using the `env` and `react` presets (and some [typescript support for Jest testing](https://jestjs.io/docs/getting-started#using-typescript) which we discuss later):
 
-```javascript
-module.exports = function() {
-  const presets = ["@babel/preset-env", "@babel/preset-react", "@babel/preset-typescript"]
-
-  return { presets };
+```json
+{
+  "presets": ["@babel/preset-env", ["@babel/preset-react", { "runtime": "automatic" }], "@babel/preset-typescript"]
 }
 ```
+:::note
+
+The `{ "runtime": "automatic" }` is to
+[prevent the `ReferenceError: React is not defined` error during Jest unit test](https://stackoverflow.com/a/69834932)
+
+Please also note that with this config set, we should not need to use `import React from 'react'`, which is a 
+discouraged practice starting from React 17
+
+:::
 
 ### TypeScript {/*typescript*/}
 
@@ -319,10 +229,11 @@ Let's set up a configuration to support JSX and compile TypeScript down to ES5 b
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
-    "jsx": "react-jsx",
+    "module": "es6",
+
     "strict": true,
     "allowJs": true,
+    "jsx": "react-jsx",
     "outDir": "./dist/",
     "noImplicitAny": true,
     "esModuleInterop": true,
@@ -484,11 +395,10 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const imageInlineSizeLimit = parseInt(process.env.IMAGE_INLINE_SIZE_LIMIT || "10000");
 
 module.exports = function (webpackEnv) {
-  const isDevEnvironment = webpackEnv === "development";
   const isProdEnvironment = webpackEnv === "production";
 
   return {
-    entry: "./src/index.tsx",
+    entry: "./packages/app/src/index.tsx",
     mode: isProdEnvironment ? "production" : "development",
     output: {
       publicPath: "/",
@@ -526,7 +436,7 @@ module.exports = function (webpackEnv) {
           {},
           {
             inject: true,
-            template: "./public/index.html",
+            template: "./packages/app/public/index.html",
           },
           isProdEnvironment
             ? {
@@ -566,9 +476,11 @@ We want to use [Hot Module Replacement][Hot Module Replacement] so that we don't
 
 We need to add an `index.html` to our webpak config, so it can work with it; otherwise webpack-dev-server will simply get us a blank screen with `yarn start`[^1]. We use [html-webpack-plugin][html-webpack-plugin] for this.
 
-```bash
+<TerminalBlock>
+
 yarn add -D html-webpack-plugin
-```
+
+</TerminalBlock>
 
 The `new HtmlWebpackPlugin(...)` snippet above was taking from an ejected [CRA][create-react-app].
 
@@ -625,7 +537,7 @@ const devServerOptions = { ...devServerConfig(), open: true };
 const server = new WebpackDevServer(devServerOptions, compiler);
 
 server.startCallback(() => {
-  console.log("Starting server on http://localhost:8080");
+  console.log("Starting server on http://localhost:3000");
 });
 ```
 
@@ -666,9 +578,119 @@ We put this in `scripts/build.js` so that we will be able to call this script du
 },
 ```
 
+### App Package
+
+Next, in the new project folder, create the following directory:
+
+```
+mkdir -p packages/app/
+```
+
+Next, create the following structure inside `packages/app/`
+
+```
+.
++-- public
++-- src
+```
+
+Our `public` directory will handle any static assets, and most importantly houses our `index.html` file, which react will utilize to render our app. The following code is an example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="theme-color" content="#000000" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="shortcut icon" href="./favicon.ico" />
+    <title>My App</title>
+</head>
+
+<body>
+<noscript> You need to enable JavaScript to run this app. </noscript>
+<div id="root"></div>
+</body>
+</html>
+```
+
+The `manifest.json` and `favidon.ico` will be placed in the same directory as the `index.html`, i.e. the `public` directory.
+
+> [The `manifest.json` provides metadata](https://developers.google.com/web/fundamentals/web-app-manifest/) used when
+> our web app is installed on a user's mobile device or desktop.
+
+#### packages/app/src/App.tsx {/*packagesappsrcapptsx*/}
+
+The TypeScript code in **App.tsx** creates our **root component**. In React, a root component is a tree of child components that represents the whole user interface:
+
+```typescript
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+import MyHomeComponent from "somePathTo/MyHomeComponent";
+import MySettingsPageComponent from "somePathTo/MySettingsPageComponent";
+
+export default function App(): JSX.Element {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<MyHomeComponent />} />
+        <Route path="/settings" element={<MySettingsPageComponent />} />
+      </Routes>
+    </Router>
+  );
+}
+```
+
+#### packages/app/src/index.tsx {/*packagesappsrcindextsx*/}
+
+**index.tsx** is the bridge between the root component and the web browser.
+
+```typescript
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+
+const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+```
+
+#### packages/app/src/index.css {/*packagesappsrcindexcss*/}
+
+This file defines the styles for our React app. Here is an example:
+
+```css
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+```
+
+Now that we've got our HTML page set up, we can start getting serious. We're going to need to set up a few more things. First, we need to make sure the code we write can be compiled, so we'll need [Babel][Babel], which we discuss next.
+
+### Upgrade to Yarn 2
+
+https://yarnpkg.com/migration/guide#migration-steps
+
+### Setup CI/CD
+
+- [Code Style Checks](https://qubitpi.github.io/hashicorp-aws/docs/react#code-style-checks)
+- 
+
 ### Project Configuration Management {/*project-configuration-management*/}
 
-This document describes Configuration Management for Nexus Graph.
+This document describes Configuration Management for our monorepo project.
 
 #### Context {/*context*/}
 
