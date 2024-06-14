@@ -281,7 +281,7 @@ Now that you're set up, let's get an overview of React!
 
 In CodeSandbox you'll see three main sections:
 
-![CodeSandbox with starter code](../react.dev/images/tutorial/react-starter-code-codesandbox.png)
+![CodeSandbox with starter code](../images/tutorial/react-starter-code-codesandbox.png)
 
 1. The _Files_ section with a list of files like `App.js`, `index.js`, `styles.css` and a folder called `public`
 1. The _code editor_ where you'll see the source code of your selected file
@@ -297,7 +297,7 @@ export default function Square() {
 
 The _browser_ section should be displaying a square with an X in it like this:
 
-![x-filled square](../react.dev/images/tutorial/x-filled-square.png)
+![x-filled square](../images/tutorial/x-filled-square.png)
 
 Now let's have a look at the files in the starter code.
 
@@ -381,11 +381,11 @@ export default function Square() {
 
 Now you should see:
 
-![two x-filled squares](../react.dev/images/tutorial/two-x-filled-squares.png)
+![two x-filled squares](../images/tutorial/two-x-filled-squares.png)
 
 Great! Now you just need to copy-paste a few times to add nine squares and...
 
-![nine x-filled squares in a line](../react.dev/images/tutorial/nine-x-filled-squares.png)
+![nine x-filled squares in a line](../images/tutorial/nine-x-filled-squares.png)
 
 Oh no! The squares are all in a single line, not in a grid like you need for our board. To fix this you'll need to group your squares into rows with `div`s and add some CSS classes. While you're at it, you'll give each square a number to make sure you know where each square is displayed.
 
@@ -417,7 +417,7 @@ export default function Square() {
 
 The CSS defined in `styles.css` styles the divs with the `className` of `board-row`. Now that you've grouped your components into rows with the styled `div`s you have your tic-tac-toe board:
 
-![tic-tac-toe board filled with numbers 1 through 9](../react.dev/images/tutorial/number-filled-board.png)
+![tic-tac-toe board filled with numbers 1 through 9](../images/tutorial/number-filled-board.png)
 
 But you now have a problem. Your component named `Square`, really isn't a square anymore. Let's fix that by changing the name to `Board`:
 
@@ -555,7 +555,7 @@ Note how unlike the browser `div`s, your own components `Board` and `Square` mus
 
 Let's take a look:
 
-![one-filled board](../react.dev/images/tutorial/board-filled-with-ones.png)
+![one-filled board](../images/tutorial/board-filled-with-ones.png)
 
 Oh no! You lost the numbered squares you had before. Now each square says "1". To fix this, you will use *props* to pass the value each square should have from the parent component (`Board`) to its child (`Square`).
 
@@ -579,7 +579,7 @@ function Square({ value }) {
 
 Oops, this is not what you wanted:
 
-![value-filled board](../react.dev/images/tutorial/board-filled-with-value.png)
+![value-filled board](../images/tutorial/board-filled-with-value.png)
 
 You wanted to render the JavaScript variable called `value` from your component, not the word "value". To "escape into JavaScript" from JSX, you need curly braces. Add curly braces around `value` in JSX like so:
 
@@ -591,7 +591,7 @@ function Square({ value }) {
 
 For now, you should see an empty board:
 
-![empty board](../react.dev/images/tutorial/empty-board.png)
+![empty board](../images/tutorial/empty-board.png)
 
 This is because the `Board` component hasn't passed the `value` prop to each `Square` component it renders yet. To fix it you'll add the `value` prop to each `Square` component rendered by the `Board` component:
 
@@ -621,7 +621,7 @@ export default function Board() {
 
 Now you should see a grid of numbers again:
 
-![tic-tac-toe board filled with numbers 1 through 9](../react.dev/images/tutorial/number-filled-board.png)
+![tic-tac-toe board filled with numbers 1 through 9](../images/tutorial/number-filled-board.png)
 
 Your updated code should look like this:
 
@@ -799,7 +799,7 @@ function Square() {
 
 By calling this `set` function from an `onClick` handler, you're telling React to re-render that `Square` whenever its `<button>` is clicked. After the update, the `Square`'s `value` will be `'X'`, so you'll see the "X" on the game board. Click on any Square, and "X" should show up:
 
-![adding xes to board](../react.dev/images/tutorial/tictac-adding-x-s.gif)
+![adding xes to board](../images/tutorial/tictac-adding-x-s.gif)
 
 Each Square has its own state: the `value` stored in each Square is completely independent of the others. When you call a `set` function in a component, React automatically updates the child components inside too.
 
@@ -901,11 +901,11 @@ body {
 
 React DevTools let you check the props and the state of your React components. You can find the React DevTools tab at the bottom of the _browser_ section in CodeSandbox:
 
-![React DevTools in CodeSandbox](../react.dev/images/tutorial/codesandbox-devtools.png)
+![React DevTools in CodeSandbox](../images/tutorial/codesandbox-devtools.png)
 
 To inspect a particular component on the screen, use the button in the top left corner of React DevTools:
 
-![Selecting components on the page with React DevTools](../react.dev/images/tutorial/devtools-select.gif)
+![Selecting components on the page with React DevTools](../images/tutorial/devtools-select.gif)
 
 <Note>
 
@@ -982,7 +982,7 @@ function Square({value}) {
 
 At this point you should see an empty tic-tac-toe board:
 
-![empty board](../react.dev/images/tutorial/empty-board.png)
+![empty board](../images/tutorial/empty-board.png)
 
 And your code should look like this:
 
