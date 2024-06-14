@@ -1872,6 +1872,63 @@ html, body { min-height: 300px; }
 
 Sometimes, you don't even need a Hook!
 
+### Using A React Custom Hook With Side Effects For Event Handling (e.g. OnClick) {/*using-a-react-custom-hook-with-side-effects-for-event-handling-eg-onclick*/}
+ 
+Let's have another example of custom hooks that handle an OnClick event: When OnClick is triggered, an API request
+should be sent, and the state should be updated based on the response.
+
+For our custom hook, `useApiClient`, we can do something like this:
+
+```js
+
+const useApiClient = (queryData: QueryData | undefined) => {
+
+  const apiClient: GraphClient = useContext(MyApiClientContext) as MyApiClient;
+  const [responseData, setResponseData] = useState<MyReduxState>();
+
+  useEffect(() => {
+    if (queryData) {
+      apiClient
+        .sendRequest(...)
+        .then((responseData) => {
+          setResponseData(responseData);
+        })
+        .catch((error) => {
+          Sentry.captureException(error);
+          throw error;
+        });
+    }
+  }, [queryData]);
+
+  return responseData;
+};
+
+export default useCreateNewGraph;
+```
+
+in this custom hook we are using `useEffect` hook API. The change of `queryData` caused by external logics will trigger
+the `useEffect` logic. We can call this hook in component by:
+
+```js
+const [queryData, setQueryData] = useState<QueryData>();
+const responseData = useApiClient(queryData);
+
+useEffect(() => {
+  if (responseData) {
+    ...
+  }
+}, [responseData]);
+
+const onClick = () => {
+  // some logic that someData
+  setQueryData(someData);
+};
+
+return (
+  <button onClick={onClick}>My Button</button>
+);
+```
+
 <Recap>
 
 - Custom Hooks let you share logic between components.
