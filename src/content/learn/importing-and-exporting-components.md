@@ -132,7 +132,7 @@ Either `'./Gallery.js'` or `'./Gallery'` will work with React, though the former
 
 There are two primary ways to export values with JavaScript: default exports and named exports. So far, our examples have only used default exports. But you can use one or both of them in the same file. **A file can have no more than one _default_ export, but it can have as many _named_ exports as you like.**
 
-![Default and named exports](/react.dev/images/docs/illustrations/i_import-export.svg)
+![Default and named exports](/images/docs/illustrations/i_import-export.svg)
 
 How you export your component dictates how you must import it. You will get an error if you try to import a default export the same way you would a named export! This chart can help you keep track:
 
