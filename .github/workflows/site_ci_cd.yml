@@ -11,8 +11,8 @@ name: Site CI/CD
       - master
 
 jobs:
-  website-ci-cd:
-    name: Test & Deploy Website to GitHub Pages
+  website:
+    name: Test & Deploy Website to Vercel
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,18 +23,20 @@ jobs:
         run: yarn
       - name: Build website
         run: yarn build
-      - name: Bundle up a GitHub Pages deployable
-        if: github.ref == 'refs/heads/master'
-        run: |
-          mkdir .next/server/pages/_next
-          mv .next/static/ .next/server/pages/_next/
-          cp -r public/images ./.next/server/pages/images
-          touch .next/server/pages/.nojekyll
-      - name: Deploy to GitHub Pages
-        if: github.ref == 'refs/heads/master'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./.next/server/pages
-          user_name: QubitPi
-          user_email: jack20220723@gmail.com
+#      - name: Load CNAME
+#        run: cp CNAME ./.next/server/pages
+#      - name: Bundle up a GitHub Pages deployable
+#        # if: github.ref == 'refs/heads/master'
+#        run: |
+#          mkdir .next/server/pages/_next
+#          mv .next/static/ .next/server/pages/_next/
+#          cp -r public/images ./.next/server/pages/images
+#          touch .next/server/pages/.nojekyll
+#      - name: Deploy to GitHub Pages
+#        # if: github.ref == 'refs/heads/master'
+#        uses: peaceiris/actions-gh-pages@v3
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          publish_dir: ./.next/server/pages
+#          user_name: QubitPi
+#          user_email: jack20220723@gmail.com
