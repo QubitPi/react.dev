@@ -131,7 +131,7 @@ Server Components and Suspense are React features rather than Next.js features. 
 
 ## Create Monorepo from Scratch {/*create-monorepo-from-scratch*/}
 
-There are a couple of hurdles to starting a React [monorepo](https://qubitpi.github.io/monorepo.tools/). The first is that node can't process all of the syntax (such as import/export and [JSX][JSX]). The second is that we will either need to build our files or serve them somehow during development for our app to work - This is especially important in the latter situations. These issues with be handled by [Babel][Babel] and [Webpack][webpack], which we cover below
+There are a couple of hurdles to starting a React [monorepo](https://monorepo.tools/). The first is that node can't process all of the syntax (such as import/export and [JSX][JSX]). The second is that we will either need to build our files or serve them somehow during development for our app to work - This is especially important in the latter situations. These issues with be handled by [Babel][Babel] and [Webpack][webpack], which we cover below
 
 ### Setup {/*setup*/}
 
@@ -195,7 +195,7 @@ yarn add -D @babel/core @babel/cli @babel/preset-env @babel/preset-react @babel/
 
 The following 2 links explains in details why the 4 dependencies above are needed in our react app:
 
-- [@babel/core @babel/cli @babel/preset-env](https://qubitpi.github.io/babel-website/docs/usage#overview)
+- [@babel/core @babel/cli @babel/preset-env](https://babel.qubitpi.org/docs/usage#overview)
 - [@babel/preset-react](https://babeljs.io/docs/#jsx-and-react)
 
 In our monorepo project root, create a Babel configuration file called **babel.config.json**. Here, we're telling babel that we're using the `env` and `react` presets (and some [typescript support for Jest testing](https://jestjs.io/docs/getting-started#using-typescript) which we discuss later):
@@ -205,7 +205,7 @@ In our monorepo project root, create a Babel configuration file called **babel.c
   "presets": ["@babel/preset-env", ["@babel/preset-react", { "runtime": "automatic" }], "@babel/preset-typescript"]
 }
 ```
-:::note
+<Note>
 
 The `{ "runtime": "automatic" }` is to
 [prevent the `ReferenceError: React is not defined` error during Jest unit test](https://stackoverflow.com/a/69834932)
@@ -213,7 +213,7 @@ The `{ "runtime": "automatic" }` is to
 Please also note that with this config set, we should not need to use `import React from 'react'`, which is a 
 discouraged practice starting from React 17
 
-:::
+</Note>
 
 ### TypeScript {/*typescript*/}
 
@@ -300,7 +300,7 @@ Jest transpiles TypeScripts before running test harness. We will need a configur
 
   <Pitfall>
 
-  [create-react-app][create-react-app] abstracts a lot of what makes a React app work away from us - at least without ejecting it and having to tweak all of the options by hand. There are a number of reasons we may want to make our own implementation, or at least have some idea of what it's doing under the hood. **Most importantly,[create-react-app][create-react-app] is more like a "Spring Boot" in the Front End world. Those who dislike the Spring for offering quick startup but terrible customizability later might find [create-react-app][create-react-app] very frustrating.**
+  [create-react-app][create-react-app] abstracts a lot of what makes a React app work away from us - at least without ejecting it and having to tweak all of the options by hand. There are a number of reasons we may want to make our own implementation, or at least have some idea of what it's doing under the hood. **Most importantly, [create-react-app][create-react-app] is more like a "Spring Boot" in the Front End world. Those who dislike the Spring for offering quick startup but terrible customizability later might find [create-react-app][create-react-app] very frustrating.**
 
   </Pitfall>
 
@@ -685,11 +685,6 @@ Now that we've got our HTML page set up, we can start getting serious. We're goi
 
 https://yarnpkg.com/migration/guide#migration-steps
 
-### Setup CI/CD {/*setup-cicd*/}
-
-- [Code Style Checks](https://qubitpi.github.io/hashicorp-aws/docs/react#code-style-checks)
-- 
-
 ### Project Configuration Management {/*project-configuration-management*/}
 
 This document describes Configuration Management for our monorepo project.
@@ -954,14 +949,14 @@ test("renders component properly", async () => {
 });
 ```
 
-[Babel]: https://qubitpi.github.io/babel-website/
+[Babel]: https://babel.qubitpi.org/
 
 [create-react-app]: https://github.com/facebook/create-react-app
 
 [Hot Module Replacement]: https://webpack.js.org/guides/hot-module-replacement/
 [html-webpack-plugin]: https://github.com/jantimon/html-webpack-plugin
 
-[Jest]: https://qubitpi.github.io/jest/
+[Jest]: https://jest.qubitpi.org
 [JSX]: https://www.w3schools.com/react/react_jsx.asp
 
 [Server-side rendering vs Client-side rendering]: https://stackoverflow.com/a/36623117
