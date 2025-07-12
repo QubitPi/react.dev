@@ -43,6 +43,10 @@
       "path": "/learn/setup",
       "routes": [
         {
+            "title": "Node.js Setup",
+            "path": "/learn/nodejs-setup"
+        },
+        {
           "title": "Editor Setup",
           "path": "/learn/editor-setup"
         },
